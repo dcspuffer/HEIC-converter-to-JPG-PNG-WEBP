@@ -1,0 +1,13 @@
+/*
+Using Pillow and Python + Pillow's heif converter,
+we can create an auto-conversion system.
+BUT first we must create (Roadmap):
+    1. A system for manual conversion of files
+    2. The actual conversion feature
+    3. multiple file options (jpeg, png, webp, etc)
+    4. Pretty UI and good UX :D
+    5. Auto-convert feature:
+        Looks at all downloaded files that are heic
+        Asks the user if they'd like all recently downloaded heic files converted
+        Converts to specified file type
+*/

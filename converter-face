@@ -1,0 +1,64 @@
+import os
+import sys
+from PIL import Image
+from pillow_heif import register_heif_opener
+from pathlib import Path
+
+register_heif_opener()
+
+def findheic(heicimage): # converts typed file into path
+    heicimage = heicimage.strip().strip('"') # remove spaces/quotation ("")
+    if not heicimage.lower().endswith(".heic"):
+        heicimage = heicimage + ".heic" # redundancy for inputs
+    home = os.path.expanduser("~")
+    places = [
+        heicimage, # adds full path/folder
+        os.path.join(home, "Desktop", heicimage),
+        os.path.join(home, "Downloads", heicimage),
+        os.path.join(home, "OneDrive", "Desktop", heicimage),
+    ]
+    for place in places:
+        if os.path.isfile(place):
+            return place # location retrieved
+
+    print(f"Could not find {heicimage} (checked the current folder, Desktop and Downloads).") #err state
+    sys.exit(1)
+
+def outputname(heicimage, extension): # makes converted file have new extension (.jpg, .png, .webp, etc)
+    return os.path.splitext(heicimage)[0] + extension
+
+def convjpg(heicimage): # convert to jpg
+    inputimage = f"{heicimage}"
+    convimage = Image.open(inputimage)
+    convimage = convimage.convert("RGB")
+    savedimage = outputname(heicimage, ".jpg")
+    convimage.save(savedimage, format = "JPEG", quality = 100)
+    print(f"Saved {savedimage}")
+
+def convpng(heicimage): # convert to png
+    inputimage = f"{heicimage}"
+    convimage = Image.open(inputimage)
+    savedimage = outputname(heicimage, ".png")
+    convimage.save(savedimage, format = "PNG")
+    print(f"Saved {savedimage}")
+
+def convwebp(heicimage): # convert to webp
+    inputimage = f"{heicimage}"
+    image = Image.open(inputimage)
+    savedimage = outputname(heicimage, ".webp")
+    image.save(savedimage, format = "WEBP", lossless = True, quality = 100)
+    print(f"Saved {savedimage}")
+
+heicimage = input("Input a .heic file (ex. example.heic, could be inputted as example): ")
+heicimage = findheic(heicimage)
+
+desiredFile = str(input("What would you like the file to be (jpg/png/webp):")).strip().lower()
+
+if desiredFile == "jpg":
+    convjpg(heicimage)
+elif desiredFile == "png":
+    convpng(heicimage)
+elif desiredFile == "webp":
+    convwebp(heicimage)
+else:
+    print(f"'{desiredFile}' isn't an option, please choose jpg, png or webp.")
